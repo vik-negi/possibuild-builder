@@ -19,8 +19,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late VideoPlayerController videoPlayerController =
-      VideoPlayerController.network(movieModel[1].video.toString());
+  late VideoPlayerController videoPlayerController = VideoPlayerController.network(
+      "https://res.cloudinary.com/duenuiiav/video/upload/v1649789401/videos/keywcjty6xusjvtumpjt.mp4");
   ChewieController? chewieController;
 
   String url = "https://api-telly-tell.herokuapp.com/movies/rahul.verma";
@@ -37,15 +37,13 @@ class _HomePageState extends State<HomePage> {
     dataResponse = mapResponce["data"];
 
     for (var movie in dataResponse) {
-      if (movie['banner']) {
-        if (!movie['banner'].isEmpty && movie['banner'] != "") {
-          movieImg.add(movie['banner']);
-          print(movie['banner']);
-        }
-      } else {
-        movieImg.add(
-            "https://res.cloudinary.com/duenuiiav/image/upload/v1649921443/video%20Banners/x4ima2idjbgvv3d4mesp.jpg");
-      }
+      // if (!movie['banner'].isEmpty && movie['banner'] != "") {
+      //   movieImg.add(movie['banner']);
+      //   print(movie['banner']);
+      // } else {
+      //   movieImg.add(
+      //       "https://res.cloudinary.com/duenuiiav/image/upload/v1649921443/video%20Banners/x4ima2idjbgvv3d4mesp.jpg");
+      // }
       if (!movie["Ratings"].isEmpty) {
         RatingModel rating = RatingModel(
           imDb: movie["imDb"],
@@ -61,11 +59,11 @@ class _HomePageState extends State<HomePage> {
         movieClip.add(clip);
         print(clip);
       }
-      // if (!movie['image'].isEmpty) {
-      //   String img = movie['image'];
-      //   movieImg.add(img);
-      //   print(img);
-      // }
+      if (!movie['image'].isEmpty) {
+        String img = movie['image'];
+        movieImg.add(img);
+        print(img);
+      }
 
       if (!movie["Actors_list"].isEmpty) {
         for (var actor in movie["Actors_list"]) {
@@ -103,8 +101,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initializePlayer() async {
-    videoPlayerController =
-        VideoPlayerController.network(movieModel[1].video.toString());
+    videoPlayerController = VideoPlayerController.network(
+        "https://res.cloudinary.com/duenuiiav/video/upload/v1649789401/videos/keywcjty6xusjvtumpjt.mp4");
     await Future.wait([videoPlayerController.initialize()]);
     chewieController = ChewieController(
       videoPlayerController: videoPlayerController,
@@ -122,7 +120,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    initializePlayer();
+    // initializePlayer();
     super.initState();
     apiCall();
   }
@@ -131,7 +129,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    videoPlayerController.dispose();
+    // videoPlayerController.dispose();
     chewieController!.dispose();
   }
 
@@ -145,6 +143,14 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.28,
+              child: AspectRatio(
+                aspectRatio: videoPlayerController.value.aspectRatio,
+                child: VideoPlayer(videoPlayerController),
+              ),
+            ),
             CarouselSlider(
               items: movieImg
                   .map((item) => Container(
@@ -163,26 +169,10 @@ class _HomePageState extends State<HomePage> {
                 enlargeCenterPage: true,
               ),
             ),
-            videoPlayerController.value.isInitialized
-                ? AspectRatio(
-                    aspectRatio: videoPlayerController.value.aspectRatio,
-                    child: VideoPlayer(videoPlayerController),
-                  )
-                : Container(),
-            FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  videoPlayerController.value.isPlaying
-                      ? videoPlayerController.pause()
-                      : videoPlayerController.play();
-                });
-              },
-              child: Icon(
-                videoPlayerController.value.isPlaying
-                    ? Icons.pause
-                    : Icons.play_arrow,
-              ),
-            ),
+            // videoPlayerController.value.isInitialized
+            //     ?
+
+            // : Container(),
             // AutoPlayList(
             //   itemCount: movieModel.length,
             //   itemExtent: 400,
