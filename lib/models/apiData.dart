@@ -14,7 +14,7 @@ class MovieModel {
   String? plot;
   String? writers;
   String? title;
-  List<ActorModel>? actors;
+  List<List<dynamic>>? actors;
   String? banner;
   MovieModel({
     this.ratings,

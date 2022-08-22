@@ -6,8 +6,10 @@ class IndividualMovie extends StatefulWidget {
   const IndividualMovie({
     Key? key,
     required this.movieModel,
+    required this.idx,
   }) : super(key: key);
   final MovieModel movieModel;
+  final int idx;
 
   @override
   State<IndividualMovie> createState() => _IndividualMovieState();
@@ -33,6 +35,8 @@ class _IndividualMovieState extends State<IndividualMovie> {
       hidenString = "";
     }
   }
+
+  late List value = [];
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,9 @@ class _IndividualMovieState extends State<IndividualMovie> {
                         style: const TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w500),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 8,
                     ),
                     Row(
                       children: [
@@ -108,11 +115,12 @@ class _IndividualMovieState extends State<IndividualMovie> {
                         ),
                       ],
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 15),
-                      height: 2,
-                      color: Colors.grey,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: Container(
+                        height: 2,
+                        color: Colors.grey,
+                      ),
                     ),
                     hidenString.isEmpty
                         ? Text(showenString)
@@ -142,9 +150,88 @@ class _IndividualMovieState extends State<IndividualMovie> {
                               )
                             ],
                           ),
+                    Text(movie.description.toString()),
+                    (widget.idx != 6 || widget.idx != 7)
+                        ? Container(
+                            padding: const EdgeInsets.only(left: 23, top: 30),
+                            alignment: Alignment.bottomLeft,
+                            child: const Text(
+                              "Actors",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.start,
+                            ),
+                          )
+                        : Container(),
+                    (widget.idx != 6 && widget.idx != 7)
+                        ? Container(
+                            padding: EdgeInsets.symmetric(vertical: 25),
+                            height: 250,
+                            child: ListView.builder(
+                                physics: const ClampingScrollPhysics(),
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
+                                itemExtent: 102,
+                                itemCount: 17,
+                                itemBuilder: (context, i) {
+                                  List value = [];
+                                  for (var j = 0;
+                                      j < movie.actors!.length;
+                                      j++) {
+                                    if (movie.actors![j][0] == widget.idx) {
+                                      value.add(movie.actors![j][1]);
+                                    }
+                                  }
+                                  List characher = value[i]
+                                      .asCharacter
+                                      .toString()
+                                      .split(" ");
+                                  return (movie.actors![i].toString() != "")
+                                      ? Column(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {},
+                                              child: Image.network(
+                                                value[i].image.toString(),
+                                                width: 120,
+                                                height: 90,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
+                                            InkWell(
+                                              child: Text(
+                                                value[i].name.toString(),
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            InkWell(
+                                              child: Text(
+                                                "${characher[0]} ${characher[1]}",
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              ),
+                                            ),
+                                            // ),
+                                          ],
+                                        )
+                                      : Container();
+                                }),
+                          )
+                        : Container(),
                   ],
                 ),
               ),
+              // Text(widget.idx.toString())
             ],
           ),
         ),

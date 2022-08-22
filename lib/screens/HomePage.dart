@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   late Future<List<MovieModel>> futureMovieModel;
   List<MovieModel> movieModel = [];
   List<RatingModel> ratingModel = [];
-  List<ActorModel> actorModel = [];
+  List<List<dynamic>> actorModel = [];
   List<String> movieClip = [];
   Map<int, String> movieImg = {};
   List<List<String>> movieLang = [];
@@ -87,7 +87,10 @@ class _HomePageState extends State<HomePage> {
             asCharacter: actor['asCharacter'],
             image: actor['image'],
           );
-          actorModel.add(actorDetails);
+          List actord = [];
+          actord.add(i);
+          actord.add(actorDetails);
+          actorModel.add(actord);
         }
       }
 
@@ -226,8 +229,10 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        IndividualMovie(movieModel: movieModel[entry.key]),
+                    builder: (context) => IndividualMovie(
+                      movieModel: movieModel[entry.key],
+                      idx: entry.key,
+                    ),
                   ),
                 );
               },
@@ -284,8 +289,10 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  IndividualMovie(movieModel: movieModel[i]),
+                              builder: (context) => IndividualMovie(
+                                movieModel: movieModel[i],
+                                idx: i,
+                              ),
                             ),
                           );
                         },
@@ -313,7 +320,7 @@ class _HomePageState extends State<HomePage> {
                                         height: 245,
                                       )
                                     : Image.network(movieModel[i]
-                                        .actors![i + 3]
+                                        .actors![0][1]!
                                         .image
                                         .toString()),
                                 Container(
@@ -402,7 +409,9 @@ class LanguageWiseMovie extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => IndividualMovie(
-                                      movieModel: movieModel[key[i]]),
+                                    movieModel: movieModel[key[i]],
+                                    idx: key[i],
+                                  ),
                                 ),
                               );
                             },
