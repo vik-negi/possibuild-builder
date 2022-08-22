@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:possibuild/firebase_options.dart';
+import 'package:possibuild/screens/ProfilePage.dart';
+import 'package:possibuild/screens/Catalog.dart';
 import 'package:possibuild/screens/HomePage.dart';
 import 'package:possibuild/screens/SigninPage.dart';
 import 'package:possibuild/screens/SignupPage.dart';
@@ -23,12 +25,66 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: NavigatorMenu(),
       routes: {
         '/signin/': (context) => const SignIn(),
         '/signup/': (context) => const SignUp(),
         '/home/': (context) => const HomePage(),
       },
+    );
+  }
+}
+
+class NavigatorMenu extends StatefulWidget {
+  NavigatorMenu({Key? key}) : super(key: key);
+
+  @override
+  State<NavigatorMenu> createState() => _NavigatorMenuState();
+}
+
+class _NavigatorMenuState extends State<NavigatorMenu> {
+  int index = 0;
+
+  static const TextStyle optionStyle =
+      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  List<Widget> screens = const <Widget>[
+    HomePage(),
+    Catalog(),
+    ProfilePage(),
+  ];
+
+  void _onItemTapped(int i) {
+    setState(() {
+      index = i;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: screens.elementAt(index),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          navbarItem(icon: Icons.home, label: "Home"),
+          navbarItem(icon: Icons.favorite_outline_outlined, label: "Favourite"),
+          navbarItem(icon: Icons.account_box, label: "Accounts"),
+        ],
+        currentIndex: index,
+        unselectedItemColor: const Color(0xffa1a1a1),
+        selectedItemColor: const Color(0xff415859),
+        showUnselectedLabels: true,
+        selectedIconTheme: const IconThemeData(size: 30),
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+      ),
+    );
+  }
+
+  BottomNavigationBarItem navbarItem(
+      {required IconData icon, required String label}) {
+    return BottomNavigationBarItem(
+      icon: Icon(icon),
+      label: label,
     );
   }
 }
