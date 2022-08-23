@@ -150,6 +150,39 @@ class _IndividualMovieState extends State<IndividualMovie> {
                               )
                             ],
                           ),
+                    Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            movieDetails(
+                                title: "Director : ",
+                                reply: movie.directors.toString()),
+                            movieDetails(
+                                title: "Released on : ",
+                                reply: movie.launchDate
+                                    .toString()
+                                    .substring(0, 10)),
+                            movieDetails(
+                                title: "Languages : ",
+                                reply: movie.languages.toString()),
+                            movieDetails(
+                                title: "Writred : ",
+                                reply: movie.writers.toString()),
+                            movieDetails(
+                              title: "Year : ",
+                              reply: movie.year.toString(),
+                            ),
+                            const movieDetails(
+                              title: "Type : ",
+                              reply: "Movie",
+                            ),
+                            // Text(
+                            //     "Released on : ${movie.launchDate.toString()}"),
+                            // Text("Director : ${movie.writers.toString()}"),
+                            // Text("Director : ${movie.year.toString()}"),
+                          ],
+                        )),
                     Text(movie.description.toString()),
                     (widget.idx != 6 || widget.idx != 7)
                         ? Container(
@@ -236,6 +269,35 @@ class _IndividualMovieState extends State<IndividualMovie> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class movieDetails extends StatelessWidget {
+  const movieDetails({Key? key, required this.title, required this.reply})
+      : super(key: key);
+  final String title;
+  final String reply;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text.rich(
+      textAlign: TextAlign.left,
+      TextSpan(
+          text: title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+          children: <InlineSpan>[
+            TextSpan(
+              text: reply,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            )
+          ]),
     );
   }
 }

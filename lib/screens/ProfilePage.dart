@@ -1,24 +1,39 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:possibuild/models/userModel.dart';
+import 'package:possibuild/screens/SigninPage.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({
+    Key? key,
+    this.user,
+    this.userModel,
+  }) : super(key: key);
+  final User? user;
+  final UserModel? userModel;
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
 
-  //     signOut() async {
-  //       await auth.signOut().then((value) => Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context)=>const SignIn()), (route) => false));
-  //       setState(() { });
-  //       return const SignIn();
-  // }
+  signOut() async {
+    await auth
+        .signOut()
+        .then((value) => Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) => const SignIn(),
+            ),
+            (route) => false));
+    setState(() {});
+    return const SignIn();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +105,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () {
                             // AuthenticationService.signOut();
                             // signOut();
+                            auth.signOut();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const SignIn()),
+                                (route) => false);
                           },
                           child: const ListTile(
                             leading: Icon(
@@ -106,6 +127,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
+                      // Text(
+                      //   userData["email"].toString()
+                      //   ),
+                      Text(widget.userModel!["email"].toString()),
                     ],
                   )),
               const SizedBox(

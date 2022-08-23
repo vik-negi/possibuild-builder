@@ -10,11 +10,12 @@ import 'package:possibuild/screens/SignupPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  MyApp({Key? key}) : super(key: key);
+  late User user;
 
   // This widget is the root of your application.
   @override
@@ -23,9 +24,11 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: NavigatorMenu(),
+          primarySwatch: Colors.blue,
+          textTheme: Theme.of(context).textTheme.apply(
+              bodyColor: const Color(0xff000000),
+              displayColor: const Color(0xffffffff))),
+      home: const MainPage(),
       routes: {
         '/signin/': (context) => const SignIn(),
         '/signup/': (context) => const SignUp(),
@@ -36,21 +39,33 @@ class MyApp extends StatelessWidget {
 }
 
 class NavigatorMenu extends StatefulWidget {
-  NavigatorMenu({Key? key}) : super(key: key);
+  NavigatorMenu({
+    Key? key,
+    this.user,
+    this.userdata,
+  }) : super(key: key);
+  final User? user;
+  late Map? userdata;
 
   @override
   State<NavigatorMenu> createState() => _NavigatorMenuState();
 }
 
 class _NavigatorMenuState extends State<NavigatorMenu> {
+  late Map userM;
   int index = 0;
+  @override
+  void initState() {
+    super.initState();
+    userM = widget.userdata!;
+  }
 
-  static const TextStyle optionStyle =
+  final TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  List<Widget> screens = const <Widget>[
+  List<Widget> screens = <Widget>[
     HomePage(),
     Catalog(),
-    ProfilePage(),
+    ProfilePage(userModel: userData),
   ];
 
   void _onItemTapped(int i) {
@@ -89,41 +104,43 @@ class _NavigatorMenuState extends State<NavigatorMenu> {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: const Color.fromARGB(255, 23, 25, 26),
-        body: FutureBuilder(
-            future: Firebase.initializeApp(
-              options: DefaultFirebaseOptions.currentPlatform,
-            ),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  final User? user = FirebaseAuth.instance.currentUser;
-                  print(user);
-                  if (user != null) {
-                    if (user.emailVerified) {
-                      return const HomePage();
-                    } else {
-                      return SendMail();
-                      // Center(child : Text("We sent you a verification link"));
-                    }
-                  } else {
-                    return SignIn();
-                  }
-                default:
-                  return const Text("data");
+      // backgroundColor: const Color.fromARGB(255, 23, 25, 26),
+      body: FutureBuilder(
+        future: Firebase.initializeApp(
+          options: DefaultFirebaseOptions.currentPlatform,
+        ),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.done:
+              final User? user = FirebaseAuth.instance.currentUser;
+              print(user);
+              if (user != null) {
+                if (user.emailVerified) {
+                  return NavigatorMenu();
+                } else {
+                  return SendMail();
+                  // Center(child : Text("We sent you a verification link"));
+                }
+              } else {
+                return const SignIn();
               }
-            }));
+            default:
+              return const Text("data");
+          }
+        },
+      ),
+    );
   }
 }
 
@@ -146,6 +163,11 @@ class _SendMailState extends State<SendMail> {
       child: Center(
           child: Column(
         children: [
+          const SizedBox(
+            height: 15,
+          ),
+          const Text("You need to verify your email first",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)),
           TextButton(
               onPressed: () {
                 user?.sendEmailVerification();
@@ -153,7 +175,9 @@ class _SendMailState extends State<SendMail> {
                   isMailBtnPressed = !isMailBtnPressed;
                 });
               },
-              child: const Text("Send Verification mail")),
+              child: const Text(
+                "Send Verification mail",
+              )),
           Text(isMailBtnPressed ? "We sent you a verification link" : ""),
           TextButton(
               onPressed: () {
