@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:possibuild/firebase_options.dart';
+import 'package:possibuild/models/userModel.dart';
 import 'package:possibuild/screens/ProfilePage.dart';
 import 'package:possibuild/screens/Catalog.dart';
 import 'package:possibuild/screens/HomePage.dart';
@@ -43,30 +44,21 @@ class NavigatorMenu extends StatefulWidget {
     Key? key,
     this.user,
     this.userdata,
+    this.userModel,
   }) : super(key: key);
   final User? user;
   late Map? userdata;
+  final UserModel? userModel;
 
   @override
   State<NavigatorMenu> createState() => _NavigatorMenuState();
 }
 
 class _NavigatorMenuState extends State<NavigatorMenu> {
-  late Map userM;
   int index = 0;
-  @override
-  void initState() {
-    super.initState();
-    userM = widget.userdata!;
-  }
 
   final TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  List<Widget> screens = <Widget>[
-    HomePage(),
-    Catalog(),
-    ProfilePage(userModel: userData),
-  ];
+      const TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   void _onItemTapped(int i) {
     setState(() {
@@ -76,7 +68,23 @@ class _NavigatorMenuState extends State<NavigatorMenu> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> screens = <Widget>[
+      HomePage(),
+      Catalog(),
+      ProfilePage(
+        userModel: widget.userModel,
+        userData: widget.userdata,
+      ),
+    ];
     return Scaffold(
+      // appBar: AppBar(
+      //   title: TextButton(
+      //     onPressed: (){
+      //       Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage(userModel: widget.userModel)));
+      //     },
+      //     child: Text(widget.userModel!.email.toString(),),
+      //     ),
+      // ),
       body: screens.elementAt(index),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[

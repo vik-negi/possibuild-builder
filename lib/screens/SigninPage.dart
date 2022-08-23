@@ -118,6 +118,8 @@ class _SignInState extends State<SignIn> {
                                   color: Colors.white,
                                 ),
                                 decoration: InputDecoration(
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.never,
                                   hintText: "Password",
                                   errorBorder: const UnderlineInputBorder(
                                     borderRadius:
@@ -382,7 +384,8 @@ class _SignInState extends State<SignIn> {
       // return response.body;
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: ((context) => NavigatorMenu(userdata: userData)),
+          builder: ((context) =>
+              NavigatorMenu(userdata: userData, userModel: userModel)),
         ),
       );
     }

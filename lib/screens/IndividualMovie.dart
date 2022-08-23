@@ -1,6 +1,8 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:possibuild/models/apiData.dart';
+import 'package:video_player/video_player.dart';
 
 class IndividualMovie extends StatefulWidget {
   const IndividualMovie({
@@ -21,11 +23,33 @@ class _IndividualMovieState extends State<IndividualMovie> {
   late String hidenString = "";
   // widget.movieModel.plot.toString().substring(150, widget.movieModel.plot.toString().length);
 
+  late VideoPlayerController videoPlayerController = VideoPlayerController.network(
+      "https://res.cloudinary.com/duenuiiav/video/upload/v1649789401/videos/keywcjty6xusjvtumpjt.mp4");
+  ChewieController? chewieController;
+
   bool isShowMore = false;
+
+  bool isbtnPressed = false;
+  Future<void> initializePlayer() async {
+    videoPlayerController =
+        VideoPlayerController.network(widget.movieModel.video!);
+    await Future.wait([videoPlayerController.initialize()]);
+    chewieController = ChewieController(
+      videoPlayerController: videoPlayerController,
+      autoPlay: true,
+      looping: false,
+      aspectRatio: videoPlayerController.value.aspectRatio,
+      placeholder: Container(
+        color: Colors.white,
+      ),
+      autoInitialize: true,
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+    initializePlayer();
     String moviePlot = widget.movieModel.plot.toString();
     if (moviePlot.length > 150) {
       showenString = moviePlot.substring(0, 150);
@@ -34,6 +58,14 @@ class _IndividualMovieState extends State<IndividualMovie> {
       showenString = moviePlot;
       hidenString = "";
     }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    videoPlayerController.dispose();
+    chewieController!.dispose();
   }
 
   late List value = [];
@@ -46,9 +78,26 @@ class _IndividualMovieState extends State<IndividualMovie> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Image.network((movie.banner != null)
-                  ? movie.banner.toString()
-                  : "https://qph.cf2.quoracdn.net/main-qimg-a1444ec6410b4d33f33ed6aa6b4a04a5-lq"),
+              // Image.network((movie.banner != null)
+              //     ? movie.banner.toString()
+              //     : "https://qph.cf2.quoracdn.net/main-qimg-a1444ec6410b4d33f33ed6aa6b4a04a5-lq"),
+
+              InkWell(
+                onTap: () {
+                  videoPlayerController.value.isPlaying
+                      ? videoPlayerController.pause()
+                      : videoPlayerController.play();
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.white,
+                  height: MediaQuery.of(context).size.height * 0.28,
+                  child: AspectRatio(
+                    aspectRatio: videoPlayerController.value.aspectRatio,
+                    child: VideoPlayer(videoPlayerController),
+                  ),
+                ),
+              ),
               Container(
                 decoration: const BoxDecoration(
                   boxShadow: [

@@ -12,10 +12,11 @@ class ProfilePage extends StatefulWidget {
     Key? key,
     this.user,
     this.userModel,
+    this.userData,
   }) : super(key: key);
   final User? user;
   final UserModel? userModel;
-
+  final Map? userData;
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
@@ -62,6 +63,30 @@ class _ProfilePageState extends State<ProfilePage> {
                           radius: 50,
                           backgroundImage: NetworkImage(
                               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQI5AIyuub1fFa92zVOo09Tlsr5vguctsBAjg&usqp=CAU"),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 120,
+                      left: 150,
+                      child: Text(
+                        "${widget.userModel!.firstName.substring(0, 1).toUpperCase()}${widget.userModel!.firstName.substring(1)} ${widget.userModel!.lastName}",
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 155,
+                      left: 150,
+                      child: Text(
+                        widget.userModel!.email,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -126,11 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 color: Colors.redAccent, size: 30),
                           ),
                         ),
-                      ),
-                      // Text(
-                      //   userData["email"].toString()
-                      //   ),
-                      Text(widget.userModel!["email"].toString()),
+                      )
                     ],
                   )),
               const SizedBox(
